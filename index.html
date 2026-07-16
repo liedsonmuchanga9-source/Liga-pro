@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feliz Aniversário ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       ROOT & RESET
+       ============================================================ */
+    :root {
+      --wine: #3a0007;
+      --wine-deep: #120002;
+      --rose: #ff4d6d;
+      --rose-dark: #c9184a;
+      --rose-light: #ff85a1;
+      --gold: #f3c677;
+      --gold-light: #fff0d4;
+      --cream: #fff5f5;
+
+      /* Cores do Vórtice Temporal */
+      --glow-cyan: #00f3ff;
+      --glow-magenta: #ff0077;
+      --glow-purple: #9d00ff;
+      --bg-dark: #03010a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, var(--wine) 0%, var(--wine-deep) 85%);
+      overflow: hidden;
+      font-family: 'Montserrat', sans-serif;
+      transition: background 1.5s ease;
+    }
+
+    /* ============================================================
+       PALCO PRINCIPAL
+       ============================================================ */
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      perspective: 1600px;
+      padding: 20px;
+      transition: transform 2.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.5s;
+      will-change: transform, opacity;
+    }
+
+    /* Efeito de implosão física da tela de aniversário */
+    .stage.implode {
+      transform: scale(0.2) rotate(-270deg);
+      opacity: 0;
+    }
+
+    /* ============================================================
+       EFEITO DE Abertura GIRATÓRIA (NOVO!)
+       ============================================================ */
+    .stage.entry-rotation {
+      animation: entryRotate 2.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    }
+
+    @keyframes entryRotate {
+      0% {
+        transform: scale(0.2) rotate(-270deg);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    /* Brilho de fundo pulsante */
+    .glow {
+      position: absolute;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 77, 109, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      animation: pulseGlow 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes pulseGlow {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+    }
+
+    /* Partículas douradas */
+    .spark {
+      position: absolute;
+      bottom: -20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      box-shadow: 0 0 8px 2px var(--gold);
+      opacity: 0;
+      animation: rise 6s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) translateX(0) scale(0.4);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.8;
+      }
+      85% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-115vh) translateX(var(--drift, 40px)) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* ============================================================
+       CONTAINER DO CORAÇÃO AMPLIADO
+       ============================================================ */
+    .heart-wrap {
+      position: relative;
+      width: 440px;
+      height: 380px;
+      margin-bottom: 25px;
+      transform-style: preserve-3d;
+      z-index: 2;
+      transition: transform 0.8s ease;
+    }
+
+    /* Moldura da foto ampliada com borda rotativa */
+    .photo-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 280px;
+      height: 280px;
+      transform: translate(-50%, -50%) scale(0.2) rotate(-15deg);
+      border-radius: 50%;
+      opacity: 0;
+      z-index: 2;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    /* Gatilho controlado por classe JS para a foto aparecer */
+    .photo-frame.open {
+      animation: revealPhoto 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .photo-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 6px;
+      background: conic-gradient(from 0deg,
+          transparent 20%,
+          var(--gold) 40%,
+          var(--gold-light) 50%,
+          var(--rose-light) 60%,
+          transparent 80%);
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rotateBorder 4s linear infinite;
+      z-index: -1;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      transition: transform 0.6s ease;
+    }
+
+    .photo-frame:hover img {
+      transform: scale(1.1);
+    }
+
+    @keyframes rotateBorder {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes revealPhoto {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2) rotate(-15deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+    }
+
+    /* Metades do coração */
+    .half {
+      position: absolute;
+      top: 0;
+      width: 220px;
+      height: 350px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .half.left {
+      left: 0;
+      transform-origin: 100% 80%;
+    }
+
+    .half.right {
+      right: 0;
+      transform-origin: 0% 80%;
+    }
+
+    /* Classes de animação disparadas via JS */
+    .half.left.open {
+      animation: openLeft 2.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    .half.right.open {
+      animation: openRight 2.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    .half.left.close {
+      animation: closeLeft 1.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    .half.right.close {
+      animation: closeRight 1.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+
+    .heart-shape {
+      position: absolute;
+      width: 220px;
+      height: 340px;
+      background: linear-gradient(to bottom, var(--rose) 0%, var(--rose-dark) 70%, #800f2f 100%);
+      box-shadow: inset 0 6px 20px rgba(255, 255, 255, 0.4), 0 12px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .half.left .heart-shape {
+      border-radius: 220px 220px 0 220px;
+      transform: rotate(-45deg);
+      left: 53px;
+    }
+
+    .half.right .heart-shape {
+      border-radius: 220px 220px 220px 0;
+      transform: rotate(45deg);
+      right: 53px;
+    }
+
+    @keyframes openLeft {
+      0% {
+        transform: rotateY(0deg);
+      }
+      100% {
+        transform: rotateY(-125deg) translateX(-60px) translateZ(60px);
+        filter: brightness(0.7);
+      }
+    }
+
+    @keyframes openRight {
+      0% {
+        transform: rotateY(0deg);
+      }
+      100% {
+        transform: rotateY(125deg) translateX(60px) translateZ(60px);
+        filter: brightness(0.7);
+      }
+    }
+
+    @keyframes closeLeft {
+      0% {
+        transform: rotateY(-125deg) translateX(-60px) translateZ(60px);
+        filter: brightness(0.7);
+      }
+      100% {
+        transform: rotateY(0deg);
+      }
+    }
+
+    @keyframes closeRight {
+      0% {
+        transform: rotateY(125deg) translateX(60px) translateZ(60px);
+        filter: brightness(0.7);
+      }
+      100% {
+        transform: rotateY(0deg);
+      }
+    }
+
+    /* Legenda ajustada */
+    .caption {
+      position: relative;
+      width: 100%;
+      text-align: center;
+      color: var(--cream);
+      opacity: 0;
+      z-index: 4;
+      max-width: 520px;
+      pointer-events: none;
+      margin-bottom: 25px;
+    }
+
+    .caption.open {
+      animation: fadeUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .caption .title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-shadow: 0 0 15px rgba(243, 198, 119, 0.3);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .caption .name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--rose-light);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .caption .msg {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e5cbd0;
+      font-weight: 300;
+      background: rgba(26, 0, 5, 0.4);
+      padding: 12px 22px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 77, 109, 0.1);
+    }
+
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================================
+       BOTÃO VOLTAR NO TEMPO SCI-FI NEON
+       ============================================================ */
+    #time-btn-container {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 5;
+    }
+
+    #time-btn-container.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    button#btn {
+      position: relative;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      letter-spacing: 3px;
+      border: 2px solid var(--glow-cyan);
+      border-radius: 50px;
+      background: rgba(3, 1, 10, 0.85);
+      color: #fff;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--glow-cyan);
+      box-shadow:
+        0 0 15px rgba(0, 243, 255, 0.3),
+        0 0 30px rgba(157, 0, 255, 0.2),
+        inset 0 0 15px rgba(0, 243, 255, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.5s, border-color 0.2s;
+      backdrop-filter: blur(8px);
+    }
+
+    button#btn:hover {
+      transform: scale(1.05);
+      border-color: var(--glow-magenta);
+      text-shadow: 0 0 8px var(--glow-magenta);
+      box-shadow:
+        0 0 25px var(--glow-cyan),
+        0 0 50px var(--glow-purple),
+        inset 0 0 15px rgba(255, 0, 119, 0.4);
+    }
+    button#btn:active {
+      transform: scale(.95);
+    }
+    button#btn:disabled {
+      opacity: 0;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Elementos da Viagem Temporal */
+    canvas#vortex {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+      transition: opacity 0.5s ease;
+      z-index: 8;
+    }
+    canvas#vortex.on {
+      opacity: 1;
+    }
+
+    #vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle, transparent 10%, rgba(20, 2, 35, 0.6) 60%, #000 100%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 7;
+    }
+
+    #flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: #fff3ff;
+      opacity: 0;
+      z-index: 12;
+    }
+    .flash-pulse {
+      animation: flashPulse 2.6s cubic-bezier(0.25, 1, 0.2, 1) forwards;
+    }
+
+    @keyframes flashPulse {
+      0% {
+        opacity: 0;
+      }
+      4% {
+        opacity: 1;
+        filter: blur(4px);
+      }
+      12% {
+        opacity: 0.15;
+      }
+      92% {
+        opacity: 0.15;
+      }
+      96% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* Relógio do Tempo */
+    #clockWrap {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s, transform 2.6s cubic-bezier(0.7, 0, 0.3, 1);
+      z-index: 10;
+    }
+    #clockWrap.on {
+      opacity: 1;
+    }
+    #clockWrap.implode {
+      transform: scale(0.2) rotate(-270deg);
+    }
+
+    .clock {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 3px solid var(--glow-cyan);
+      background: rgba(3, 1, 10, 0.7);
+      box-shadow:
+        0 0 30px var(--glow-cyan),
+        0 0 60px var(--glow-purple),
+        inset 0 0 20px rgba(157, 0, 255, 0.4);
+      position: relative;
+      backdrop-filter: blur(4px);
+    }
+    .hand {
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: bottom center;
+      border-radius: 4px;
+    }
+    .hour {
+      width: 6px;
+      height: 65px;
+      margin-left: -3px;
+      background: var(--glow-magenta);
+      box-shadow: 0 0 12px var(--glow-magenta);
+    }
+    .minute {
+      width: 4px;
+      height: 95px;
+      margin-left: -2px;
+      background: var(--glow-cyan);
+      box-shadow: 0 0 12px var(--glow-cyan);
+    }
+
+    .clock-animating .hour {
+      animation: spinBackHour 2.6s cubic-bezier(0.7, -0.2, 0.3, 1.2) forwards;
+    }
+    .clock-animating .minute {
+      animation: spinBackMinute 2.6s cubic-bezier(0.7, -0.2, 0.3, 1.2) forwards;
+    }
+
+    @keyframes spinBackHour {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-1440deg);
+      }
+    }
+    @keyframes spinBackMinute {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(-10080deg);
+      }
+    }
+
+    /* Glitch Text */
+    #glitchText {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 26px;
+      font-weight: 900;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 5px;
+      pointer-events: none;
+      z-index: 11;
+      opacity: 0;
+      text-shadow: 3px 0 0 var(--glow-magenta), -3px 0 0 var(--glow-cyan);
+      text-align: center;
+      width: 90%;
+    }
+    .glitch-on {
+      animation: glitchShow 2.6s ease-in-out forwards, rgbShimmer 0.15s infinite;
+    }
+
+    @keyframes glitchShow {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.6) skewX(20deg);
+      }
+      10% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1) skewX(0);
+      }
+      14% {
+        transform: translate(-51%, -49%) skewY(3deg);
+      }
+      18% {
+        transform: translate(-49%, -51%) skewX(-3deg);
+      }
+      22% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      85% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      95% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.15);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+      }
+    }
+    @keyframes rgbShimmer {
+      0%,
+      100% {
+        text-shadow: 3px 0 0 var(--glow-magenta), -3px 0 0 var(--glow-cyan);
+      }
+      50% {
+        text-shadow: -3px 0 0 var(--glow-magenta), 3px 0 0 var(--glow-cyan);
+      }
+    }
+
+    /* Vibração */
+    #shake {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.5s;
+    }
+    .do-shake {
+      animation: shakeScreen 2.6s cubic-bezier(.36, .07, .19, .97) both;
+    }
+
+    @keyframes shakeScreen {
+      10%,
+      90% {
+        transform: translate3d(-2px, 2px, 0);
+      }
+      20%,
+      80% {
+        transform: translate3d(4px, -4px, 0);
+      }
+      30%,
+      50%,
+      70% {
+        transform: translate3d(-6px, 6px, 0);
+      }
+      40%,
+      60% {
+        transform: translate3d(6px, -6px, 0);
+      }
+      95% {
+        transform: translate3d(-10px, 10px, 0);
+      }
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /* Corações flutuantes */
+    .floating-heart {
+      position: absolute;
+      opacity: 0;
+      animation: floatHeart 7s ease-in infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(0) scale(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.2) rotate(180deg);
+        opacity: 0;
+      }
+    }
+
+    /* ============================================================
+       MENU DE MEMÓRIAS - APENAS VÍDEO
+       ============================================================ */
+    #memoriesContainer {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #memoriesContainer.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .memories-stage {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .memories-media {
+      width: 100%;
+      height: 100%;
+    }
+
+    .memories-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============================================================
+       TELA FINAL - "VOCÊ É A MELHOR, INCRÍVEL!"
+       ============================================================ */
+    #finalScreen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #1a0005 0%, #000 100%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 25;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    #finalScreen.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .final-content {
+      text-align: center;
+      padding: 40px;
+      animation: finalEntrance 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .final-content.animate {
+      animation: finalEntrance 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes finalEntrance {
+      0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .final-hearts {
+      font-size: 80px;
+      animation: floatHearts 3s ease-in-out infinite;
+      margin-bottom: 30px;
+    }
+
+    @keyframes floatHearts {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .final-title {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5rem;
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(243, 198, 119, 0.5);
+      margin-bottom: 15px;
+      letter-spacing: 3px;
+    }
+
+    .final-message {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      color: var(--rose-light);
+      text-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .final-subtitle {
+      font-size: 1.3rem;
+      color: #e5cbd0;
+      font-weight: 300;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.8;
+      background: rgba(26, 0, 5, 0.3);
+      padding: 20px 30px;
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 77, 109, 0.2);
+    }
+
+    .final-sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 26;
+    }
+
+    .sparkle {
+      position: absolute;
+      animation: sparkleFloat 4s ease-in-out infinite;
+      font-size: 30px;
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      50% {
+        transform: translateY(-50px) rotate(180deg);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .heart-wrap {
+        width: 260px;
+        height: 240px;
+        margin-bottom: 20px;
+      }
+      .half {
+        width: 130px;
+        height: 210px;
+      }
+      .half.left {
+        left: 26px;
+      }
+      .half.right {
+        right: 26px;
+      }
+      .heart-shape {
+        width: 130px;
+        height: 190px;
+      }
+      .half.left .heart-shape {
+        border-radius: 130px 130px 0 130px;
+        left: 0;
+      }
+      .half.right .heart-shape {
+        border-radius: 130px 130px 130px 0;
+        right: 0;
+      }
+      .photo-frame {
+        width: 170px;
+        height: 170px;
+      }
+
+      .caption .title {
+        font-size: 1.6rem;
+      }
+      .caption .name {
+        font-size: 1.2rem;
+      }
+      .caption .msg {
+        font-size: 0.85rem;
+        padding: 10px 15px;
+      }
+      button#btn {
+        padding: 10px 24px;
+        font-size: 13px;
+      }
+
+      .final-title {
+        font-size: 2.2rem;
+      }
+      .final-message {
+        font-size: 1.8rem;
+      }
+      .final-subtitle {
+        font-size: 1rem;
+        padding: 15px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE ANIVERSÁRIO -->
+  <div id="shake">
+    <div class="stage" id="stage">
+      <div class="glow"></div>
+
+      <!-- Coração Principal -->
+      <div class="heart-wrap" id="heartWrap">
+        <div class="photo-frame" id="photoFrame">
+          <img src="SUA_FOTO_AQUI.jpg" alt="Foto da aniversariante">
+        </div>
+
+        <div class="half left" id="halfLeft">
+          <div class="heart-shape"></div>
+        </div>
+
+        <div class="half right" id="halfRight">
+          <div class="heart-shape"></div>
+        </div>
+      </div>
+
+      <!-- Legenda -->
+      <div class="caption" id="caption">
+        <p class="title">✨ Feliz Aniversário! ✨</p>
+        <p class="name">NOME DA AMIGA</p>
+        <p class="msg">Que seu dia seja tão especial quanto você!<br>Desejo muito amor, saúde e realizações. 💖</p>
+      </div>
+
+      <!-- Container do Botão Temporal -->
+      <div id="time-btn-container">
+        <button id="btn" onclick="voltarTempo()">⏪ Voltar no Tempo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU DE MEMÓRIAS - APENAS VÍDEO -->
+  <div id="memoriesContainer">
+    <div class="memories-stage">
+      <div class="memories-media" id="memoriesMedia">
+        <video id="memoriesVideo" muted playsinline>
+          <source src="moment.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA FINAL -->
+  <div id="finalScreen">
+    <div class="final-sparkles" id="finalSparkles"></div>
+    <div class="final-content" id="finalContent">
+      <div class="final-hearts">💖✨💖</div>
+      <h1 class="final-title">Você é a melhor!</h1>
+      <p class="final-message">Incrível ❤️</p>
+      <p class="final-subtitle">
+        Cada momento ao seu lado é um presente.<br>
+        Obrigado por existir e tornar o mundo<br>
+        um lugar mais lindo e especial! 🌟
+      </p>
+    </div>
+  </div>
+
+  <!-- Recursos do Efeito Sci-Fi -->
+  <canvas id="vortex"></canvas>
+  <div id="vignette"></div>
+  <div id="flash"></div>
+
+  <div id="clockWrap">
+    <div class="clock" id="clock">
+      <div class="hand hour"></div>
+      <div class="hand minute"></div>
+    </div>
+  </div>
+
+  <div id="glitchText">VOLTANDO NO TEMPO...</div>
+
+  <script>
+    // ============================================================
+    // DOM ELEMENTOS
+    // ============================================================
+    const stage = document.getElementById('stage');
+    const photoFrame = document.getElementById('photoFrame');
+    const halfLeft = document.getElementById('halfLeft');
+    const halfRight = document.getElementById('halfRight');
+    const caption = document.getElementById('caption');
+    const btnContainer = document.getElementById('time-btn-container');
+    const memoriesContainer = document.getElementById('memoriesContainer');
+    const finalScreen = document.getElementById('finalScreen');
+    const finalContent = document.getElementById('finalContent');
+
+    // ============================================================
+    // INICIALIZAÇÃO COM EFEITO GIRATÓRIO DE ENTRADA
+    // ============================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      stage.classList.add('entry-rotation');
+
+      setTimeout(() => {
+        halfLeft.classList.add('open');
+        halfRight.classList.add('open');
+        photoFrame.classList.add('open');
+        caption.classList.add('open');
+
+        setTimeout(() => {
+          btnContainer.classList.add('show');
+        }, 4500);
+      }, 2700);
+    });
+
+    // ============================================================
+    // PARTÍCULAS E CORAÇÕES FLUTUANTES
+    // ============================================================
+    for (let i = 0; i < 35; i++) {
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      const left = Math.random() * 100;
+      const delay = Math.random() * 6;
+      const duration = 4 + Math.random() * 3;
+      const drift = (Math.random() * 100 - 50) + 'px';
+      const size = 3 + Math.random() * 5;
+
+      spark.style.cssText = `
+          left: ${left}%;
+          animation-delay: ${delay}s;
+          animation-duration: ${duration}s;
+          --drift: ${drift};
+          width: ${size}px;
+          height: ${size}px;
+        `;
+      stage.appendChild(spark);
+    }
+
+    const emojis = ['❤️', '💖', '✨', '🌸'];
+    for (let i = 0; i < 15; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.textContent = emojis[i % emojis.length];
+      const left = 5 + Math.random() * 90;
+      const delay = Math.random() * 5;
+      const duration = 5 + Math.random() * 4;
+      const size = 14 + Math.random() * 16;
+
+      heart.style.cssText = `
+          left: ${left}%;
+          bottom: -20px;
+          font-size: ${size}px;
+          animation-delay: ${delay}s;
+          animation-duration: ${duration}s;
+        `;
+      stage.appendChild(heart);
+    }
+
+    // ============================================================
+    // CÓDIGO DE VIAGEM NO TEMPO (VÓRTICE)
+    // ============================================================
+    const canvas = document.getElementById('vortex');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    let particles = [];
+    let running = false;
+    let t0 = 0;
+    const DURATION = 2600;
+
+    class Particle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(init = false) {
+        this.angle = Math.random() * Math.PI * 2;
+        this.radius = init ? (Math.random() * Math.max(innerWidth, innerHeight) * 0.8) : Math.max(innerWidth,
+          innerHeight) * 0.8;
+        this.speed = 0.01 + Math.random() * 0.03;
+        this.length = 15 + Math.random() * 35;
+        this.width = 1.5 + Math.random() * 2.5;
+
+        const rand = Math.random();
+        if (rand < 0.4) {
+          this.color = 'rgba(0, 243, 255, 0.85)';
+        } else if (rand < 0.8) {
+          this.color = 'rgba(157, 0, 255, 0.85)';
+        } else {
+          this.color = 'rgba(255, 255, 255, 0.95)';
+        }
+      }
+      update(progress) {
+        const acceleration = 1 + (progress * 14);
+        this.angle -= this.speed * acceleration;
+        this.radius -= (2.5 + progress * 28);
+        if (this.radius < 10) this.reset();
+      }
+      draw(cx, cy) {
+        const x1 = cx + Math.cos(this.angle) * this.radius;
+        const y1 = cy + Math.sin(this.angle) * this.radius * 0.7;
+
+        const tailAngle = this.angle + (this.speed * 1.6);
+        const tailRadius = this.radius + this.length;
+        const x2 = cx + Math.cos(tailAngle) * tailRadius;
+        const y2 = cy + Math.sin(tailAngle) * tailRadius * 0.7;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    for (let i = 0; i < 350; i++) particles.push(new Particle());
+
+    function animate(ts) {
+      if (!t0) t0 = ts;
+      const elapsed = ts - t0;
+      const progress = Math.min(elapsed / DURATION, 1);
+
+      ctx.fillStyle = `rgba(3, 1, 10, ${0.12 + (progress * 0.15)})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const cx = canvas.width / 2,
+        cy = canvas.height / 2;
+      const glowR = 25 + (progress * 280);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+
+      if (progress < 0.5) {
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(0.3, 'rgba(0, 243, 255, 0.8)');
+        grad.addColorStop(0.7, 'rgba(157, 0, 255, 0.4)');
+      } else {
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(0.2, 'rgba(255, 0, 119, 0.9)');
+        grad.addColorStop(0.6, 'rgba(157, 0, 255, 0.5)');
+      }
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.update(progress);
+        p.draw(cx, cy);
+      });
+
+      if (running && elapsed < DURATION) {
+        requestAnimationFrame(animate);
+      } else if (running) {
+        finish();
+      }
+    }
+
+    // ============================================================
+    // FUNÇÃO VOLTAR NO TEMPO
+    // ============================================================
+    function voltarTempo() {
+      if (running) return;
+      running = true;
+      t0 = 0;
+
+      const btn = document.getElementById('btn');
+      const vignette = document.getElementById('vignette');
+      const flash = document.getElementById('flash');
+      const clockWrap = document.getElementById('clockWrap');
+      const glitchText = document.getElementById('glitchText');
+      const shakeEl = document.getElementById('shake');
+      const cv = document.getElementById('vortex');
+
+      btn.disabled = true;
+      cv.classList.add('on');
+      vignette.style.opacity = 1;
+      clockWrap.classList.add('on');
+      clockWrap.classList.add('clock-animating');
+
+      // Atualiza frase do glitch
+      glitchText.textContent = 'VOLTANDO NO TEMPO...';
+
+      // Contrai a tela de aniversário
+      stage.classList.add('implode');
+      clockWrap.classList.add('implode');
+
+      // Executa as animações de impacto visual
+      flash.classList.remove('flash-pulse');
+      void flash.offsetWidth;
+      flash.classList.add('flash-pulse');
+      glitchText.classList.remove('glitch-on');
+      void glitchText.offsetWidth;
+      glitchText.classList.add('glitch-on');
+      shakeEl.classList.remove('do-shake');
+      void shakeEl.offsetWidth;
+      shakeEl.classList.add('do-shake');
+
+      requestAnimationFrame(animate);
+    }
+
+    // ============================================================
+    // FINALIZAÇÃO DA VIAGEM - ABRE VÍDEO DE MEMÓRIA
+    // ============================================================
+    function finish() {
+      running = false;
+
+      const cv = document.getElementById('vortex');
+      const vignette = document.getElementById('vignette');
+      const clockWrap = document.getElementById('clockWrap');
+
+      cv.classList.remove('on');
+      vignette.style.opacity = 0;
+      clockWrap.classList.remove('on');
+      clockWrap.classList.remove('clock-animating');
+      clockWrap.classList.remove('implode');
+
+      // Esconde a tela de aniversário
+      document.getElementById('shake').style.display = 'none';
+
+      // Mostra o menu de memórias com vídeo
+      memoriesContainer.classList.add('show');
+      
+      // Inicia o vídeo
+      iniciarVideoMemoria();
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // ============================================================
+    // VÍDEO DE MEMÓRIA
+    // ============================================================
+    function iniciarVideoMemoria() {
+      const video = document.getElementById('memoriesVideo');
+      
+      // Forçar carregamento e reprodução
+      video.load();
+      
+      // Tentar tocar com som
+      video.muted = false;
+      video.volume = 0.7;
+      
+      const playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log('✅ Vídeo tocando!');
+        }).catch(error => {
+          console.log('⚠️ Autoplay bloqueado, tentando muted...');
+          video.muted = true;
+          video.play().catch(err => {
+            console.log('❌ Clique para iniciar:', err);
+          });
+        });
+      }
+
+      // Quando o vídeo terminar, transiciona para tela final
+      video.addEventListener('ended', transicaoParaTelaFinal);
+      
+      // Backup: se o vídeo travar, após 10 segundos vai para tela final
+      setTimeout(() => {
+        if (!video.ended && video.currentTime < 1) {
+          transicaoParaTelaFinal();
+        }
+      }, 15000);
+    }
+
+    // ============================================================
+    // TRANSIÇÃO PARA TELA FINAL
+    // ============================================================
+    function transicaoParaTelaFinal() {
+      // Fade out do vídeo
+      memoriesContainer.style.opacity = '0';
+      
+      setTimeout(() => {
+        memoriesContainer.classList.remove('show');
+        memoriesContainer.style.display = 'none';
+        
+        // Mostrar tela final
+        finalScreen.classList.add('show');
+        
+        // Animar conteúdo
+        setTimeout(() => {
+          finalContent.classList.add('animate');
+          criarParticulasFinais();
+        }, 200);
+        
+      }, 1000);
+    }
+
+    // ============================================================
+    // PARTÍCULAS DA TELA FINAL
+    // ============================================================
+    function criarParticulasFinais() {
+      const sparklesContainer = document.getElementById('finalSparkles');
+      const emojisFinal = ['✨', '💖', '🌟', '💕', '🎀', '💫', '❤️', '🌸'];
+      
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.textContent = emojisFinal[i % emojisFinal.length];
+        
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        const delay = Math.random() * 2;
+        const duration = 3 + Math.random() * 4;
+        
+        sparkle.style.cssText = `
+          left: ${left}%;
+          top: ${top}%;
+          animation-delay: ${delay}s;
+          animation-duration: ${duration}s;
+        `;
+        
+        sparklesContainer.appendChild(sparkle);
+      }
+    }
+
+    console.log('✨ Pronto! Clique em "Voltar no Tempo" para ver o vídeo e a surpresa final!');
+  </script>
+
+</body>
+</html>

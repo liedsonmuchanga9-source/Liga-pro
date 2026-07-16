@@ -1,0 +1,42 @@
+body {
+    font-size: 15pt;
+}
+
+.certo{
+    background: red;
+}
+
+.erradoas
+#resultado{
+    color: red;
+    border: 1px solid black;
+    border-radius: 50px;
+    width: 20px;
+    
+}
+
+#botao{
+    width: 60px;
+    height: 40px;
+}
+
+.linha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linha::before,
+.linha::after {
+  content: "";
+  width: 50px;
+  border-bottom: 2px solid whitesmoke;
+}
+
+.linha::before {
+  margin-right: 10px;
+}
+
+.linha::after {
+  margin-left: 10px;
+}
